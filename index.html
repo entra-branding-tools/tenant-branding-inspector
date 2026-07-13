@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="shortcut icon" href="https://aadcdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico" />
+<title>Sign-in Page Branding Checker</title>
+<style>
+  :root {
+    --brand: #0f6cbd;
+    --brand-hover: #115ea3;
+    --brand-pressed: #0c3b5e;
+    --neutral-bg: #faf9f8;
+    --card-bg: #ffffff;
+    --stroke: #e1dfdd;
+    --text: #242424;
+    --text-secondary: #616161;
+    --high-bg: #fdf3f4;
+    --high-fg: #b10e1c;
+    --high-stroke: #f3d6d8;
+    --med-bg: #fff9f5;
+    --med-fg: #bc4b09;
+    --med-stroke: #f7e0cf;
+    --shadow: 0 1.6px 3.6px rgba(0,0,0,.10), 0 0.3px 0.9px rgba(0,0,0,.07);
+    --radius: 8px;
+    --font: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--neutral-bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1080px; margin: 0 auto; }
+  header.page { margin-bottom: 20px; }
+  header.page h1 { font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+  header.page p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+  .badge-case {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    color: var(--brand); background: #eff6fc; border: 1px solid #cfe4f7;
+    padding: 2px 8px; border-radius: 4px; margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--stroke);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 20px; margin-bottom: 18px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+  .card .hint { font-size: 12.5px; color: var(--text-secondary); margin: 0 0 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  input[type=text], textarea {
+    width: 100%; font-family: var(--font); font-size: 14px;
+    color: var(--text); background: #fff;
+    border: 1px solid #8a8886; border-bottom: 2px solid var(--brand);
+    border-radius: 4px; padding: 8px 10px; outline: none;
+  }
+  input[type=date] {
+    font-family: var(--font); font-size: 14px; color: var(--text); background: #fff;
+    border: 1px solid #8a8886; border-bottom: 2px solid var(--brand);
+    border-radius: 4px; padding: 7px 10px; outline: none; height: 38px;
+  }
+  input[type=text]:focus, textarea:focus { border-bottom-color: var(--brand-pressed); }
+  textarea { min-height: 120px; resize: vertical; font-family: Consolas, "Cascadia Mono", monospace; font-size: 13px; }
+  .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .row > .grow { flex: 1 1 320px; }
+  button {
+    font-family: var(--font); font-size: 14px; font-weight: 600;
+    color: #fff; background: var(--brand); border: none;
+    border-radius: 4px; padding: 8px 16px; cursor: pointer; white-space: nowrap;
+    height: 38px;
+  }
+  button:hover { background: var(--brand-hover); }
+  button:active { background: var(--brand-pressed); }
+  button.secondary { color: var(--brand); background: #fff; border: 1px solid #8a8886; }
+  button.secondary:hover { background: #f3f2f1; }
+  .divider { display:flex; align-items:center; text-align:center; color:var(--text-secondary); font-size:12px; margin:14px 0; }
+  .divider::before, .divider::after { content:""; flex:1; border-top:1px solid var(--stroke); }
+  .divider::before { margin-right:10px; } .divider::after { margin-left:10px; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
+  .urlbox {
+    margin-top: 12px; background: #f3f2f1; border: 1px solid var(--stroke);
+    border-radius: 4px; padding: 10px; font-size: 12.5px; word-break: break-all;
+  }
+  .urlbox a { color: var(--brand); }
+  .callout {
+    font-size: 12.5px; background: var(--med-bg); border: 1px solid var(--med-stroke);
+    color: #6b4b1f; border-radius: 4px; padding: 10px 12px; margin-top: 12px;
+  }
+  .callout b { color: var(--med-fg); }
+  #status { font-size: 13px; margin: 4px 0 0; min-height: 18px; }
+  #status.err { color: var(--high-fg); }
+  #status.ok { color: #0e700e; }
+  #status.busy { color: var(--text-secondary); }
+  .summary { display:flex; gap:20px; flex-wrap:wrap; margin: 4px 0 14px; }
+  .stat { }
+  .stat .n { font-size: 22px; font-weight: 600; }
+  .stat .l { font-size: 12px; color: var(--text-secondary); }
+  .stat.high .n { color: var(--high-fg); }
+  .stat.med .n { color: var(--med-fg); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--text-secondary);
+    border-bottom: 1px solid var(--stroke); padding: 8px 10px; white-space: nowrap;
+  }
+  tbody td { padding: 8px 10px; border-bottom: 1px solid #f0eff0; vertical-align: top; }
+  tbody tr:hover { background: #f8f8f8; }
+  .sev { display:inline-block; font-size:11.5px; font-weight:600; padding:1px 8px; border-radius:10px; }
+  .sev.High { color: var(--high-fg); background: var(--high-bg); border:1px solid var(--high-stroke); }
+  .sev.Medium { color: var(--med-fg); background: var(--med-bg); border:1px solid var(--med-stroke); }
+  .exploited { color: var(--high-fg); font-weight:600; }
+  .tag-ext { display:inline-block; font-size:11px; background:#eff6fc; color:var(--brand); border:1px solid #cfe4f7; border-radius:4px; padding:0 5px; margin-left:6px; }
+  .empty { color: var(--text-secondary); font-style: italic; padding: 16px 4px; }
+  .section-head {
+    font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--text-secondary); margin: 26px 4px 10px;
+    border-top: 1px solid var(--stroke); padding-top: 18px;
+  }
+  .al-actions { display:flex; gap:6px; }
+  .al-group {
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--stroke);
+  }
+  .al-group-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .al-group-hint { font-size: 12.5px; color: var(--text-secondary); margin: 0 0 12px; }
+  .al-or { color: var(--text-secondary); font-size: 13px; padding: 0 2px; }
+  .al-since { display:flex; align-items:center; gap:8px; }
+  .al-since label { margin:0; font-weight: 400; font-size: 13px; color: var(--text); }
+  td .link-btn {
+    font-family: var(--font); font-size: 12.5px; color: var(--high-fg);
+    background: none; border: none; padding: 0; height: auto; cursor: pointer; font-weight: 600;
+  }
+  td .link-btn:hover { text-decoration: underline; background: none; }
+  footer { color: var(--text-secondary); font-size: 11.5px; margin-top: 24px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="page">
+    <h1>Sign-in Page Branding Checker</h1>
+    <p>Some companies add their own styling to the Microsoft sign-in page. This tool checks that styling for tricks that could <b>move or stack images on top of the login boxes</b> — a technique attackers use to fool people.</p>
+  </header>
+
+  <!-- SECTION: by url -->
+  <div class="card">
+    <h2>Check a styling link</h2>
+    <p class="hint">Paste the styling web address (it contains the word <code>customcss</code>) and check it for tricks that could move or stack content over the sign-in boxes.</p>
+    <div class="row">
+      <div class="grow">
+        <label for="cssUrl">Styling web address</label>
+        <input type="text" id="cssUrl" placeholder="https://aadcdn.msauthimages.net/…/logintenantbranding/0/customcss?ts=…" spellcheck="false" />
+      </div>
+      <button id="btnFetch">Check the styling</button>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button class="secondary" id="btnClear">Start over</button>
+    </div>
+    <p id="status"></p>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card" id="resultsCard" style="display:none;">
+    <h2>Results</h2>
+    <div class="summary" id="summary"></div>
+    <div id="tableWrap"></div>
+  </div>
+
+  <footer>This tool only reads and reports — it never changes anything. A finding means a setting <i>could</i> move or stack content on the sign-in page; it doesn't prove misuse. When in doubt, share the results with the security team.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Properties that enable overlaying content over the sign-in UI.
+  // "High" = directly repositions/stacks an element; "Medium" = supporting / layout-shifting.
+  var SEVERITY = {
+    "position": "High", "top": "High", "right": "High", "bottom": "High", "left": "High",
+    "inset": "High", "inset-block": "High", "inset-inline": "High",
+    "inset-block-start": "High", "inset-block-end": "High",
+    "inset-inline-start": "High", "inset-inline-end": "High",
+    "z-index": "High", "transform": "High", "translate": "High",
+    "margin": "High", "margin-top": "High", "margin-right": "High",
+    "margin-bottom": "High", "margin-left": "High",
+    "margin-block": "High", "margin-inline": "High",
+    "margin-block-start": "High", "margin-block-end": "High",
+    "margin-inline-start": "High", "margin-inline-end": "High",
+    "float": "Medium", "clear": "Medium", "clip": "Medium", "clip-path": "Medium",
+    "overflow": "Medium", "overflow-x": "Medium", "overflow-y": "Medium"
+  };
+
+  // Selectors known to be allowlisted for tenant custom CSS; .ext-banner-logo is the one commonly misused for overlays.
+  var EXPLOITED_SELECTOR = ".ext-banner-logo";
+
+  var el = function (id) { return document.getElementById(id); };
+
+  function setStatus(msg, cls) {
+    var s = el("status");
+    s.textContent = msg || "";
+    s.className = cls || "";
+  }
+
+  function parseCss(cssText) {
+    var style = document.createElement("style");
+    style.textContent = cssText;
+    document.head.appendChild(style);
+    var rules;
+    try {
+      rules = style.sheet ? style.sheet.cssRules : null;
+    } catch (e) {
+      rules = null;
+    }
+    var out = [];
+    if (rules) {
+      for (var i = 0; i < rules.length; i++) {
+        collectFromRule(rules[i], out);
+      }
+    }
+    document.head.removeChild(style);
+    return out;
+  }
+
+  function collectFromRule(rule, out) {
+    // CSSStyleRule = 1
+    if (rule.type === 1 && rule.style) {
+      var sel = rule.selectorText || "";
+      for (var j = 0; j < rule.style.length; j++) {
+        var prop = rule.style[j];
+        var sev = SEVERITY[prop];
+        if (sev) {
+          out.push({
+            selector: sel,
+            prop: prop,
+            value: rule.style.getPropertyValue(prop),
+            important: rule.style.getPropertyPriority(prop) === "important",
+            severity: sev
+          });
+        }
+      }
+    } else if (rule.cssRules) {
+      // @media / @supports wrappers — descend
+      for (var k = 0; k < rule.cssRules.length; k++) {
+        collectFromRule(rule.cssRules[k], out);
+      }
+    }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function selectorIsExploited(sel) {
+    return sel.split(",").some(function (s) {
+      return s.trim().indexOf(EXPLOITED_SELECTOR) !== -1;
+    });
+  }
+
+  function render(findings) {
+    var card = el("resultsCard");
+    card.style.display = "";
+
+    if (!findings.length) {
+      el("summary").innerHTML = "";
+      el("tableWrap").innerHTML = '<p class="empty">✓ Looks clean. No settings were found that could move or stack content on top of the login boxes.</p>';
+      return;
+    }
+
+    // Sort: exploited logo selector first.
+    findings.sort(function (a, b) {
+      var ax = selectorIsExploited(a.selector) ? 0 : 1;
+      var bx = selectorIsExploited(b.selector) ? 0 : 1;
+      return ax - bx;
+    });
+
+    var sels = {};
+    findings.forEach(function (f) { sels[f.selector] = 1; });
+    el("summary").innerHTML =
+      stat(findings.length, "settings to review", "high") +
+      stat(Object.keys(sels).length, "page areas affected");
+
+    var rows = findings.map(function (f) {
+      return "<tr>" +
+        '<td class="mono exploited">' + esc(f.selector) + "</td>" +
+        '<td class="mono">' + esc(f.prop) + "</td>" +
+        '<td class="mono">' + esc(f.value) + (f.important ? " !important" : "") + "</td>" +
+      "</tr>";
+    }).join("");
+
+    el("tableWrap").innerHTML =
+      '<p class="hint" style="margin-top:0">Every setting listed below can move or stack content on the sign-in page, so all of them are worth reviewing.</p>' +
+      "<table><thead><tr>" +
+      "<th>Page area (styling name)</th><th>Setting</th><th>Value</th>" +
+      "</tr></thead><tbody>" + rows + "</tbody></table>";
+  }
+
+  function stat(n, label, cls) {
+    return '<div class="stat ' + (cls || "") + '"><div class="n">' + n + '</div><div class="l">' + label + "</div></div>";
+  }
+
+  function analyzeText(cssText, sourceLabel) {
+    if (!cssText || !cssText.trim()) {
+      setStatus("Nothing to check yet — add a styling link.", "err");
+      return;
+    }
+    var findings = parseCss(cssText);
+    render(findings);
+    if (!findings.length) {
+      setStatus("✓ Done — nothing risky found.", "ok");
+    } else {
+      setStatus("Done — found " + findings.length + " setting" + (findings.length === 1 ? "" : "s") +
+        " to review. See the table below.", "err");
+    }
+    el("resultsCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function fetchAndAnalyze(url) {
+    url = url.trim();
+    if (!url) { setStatus("Paste the styling web address first.", "err"); return; }
+    setStatus("Getting the styling…", "busy");
+    fetch(url, { method: "GET", mode: "cors", cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (text) { analyzeText(text, "Fetched customcss"); })
+      .catch(function (e) {
+        setStatus("Couldn't open that link automatically. Open it in a browser tab, copy all the text you see, and paste it into the box below.", "err");
+      });
+  }
+
+  // Wire up.
+  document.addEventListener("DOMContentLoaded", function () {
+    el("btnFetch").addEventListener("click", function () { fetchAndAnalyze(el("cssUrl").value); });
+    el("btnClear").addEventListener("click", function () {
+      el("cssUrl").value = "";
+      el("resultsCard").style.display = "none";
+      setStatus("");
+    });
+    el("cssUrl").addEventListener("keydown", function (e) { if (e.key === "Enter") fetchAndAnalyze(el("cssUrl").value); });
+  });
+})();
+</script>
+</body>
+</html>

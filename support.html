@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="shortcut icon" href="https://aadcdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico" />
+<title>Sign-in Page Branding Checker — Support</title>
+<style>
+  :root {
+    --brand: #0f6cbd;
+    --brand-hover: #115ea3;
+    --brand-pressed: #0c3b5e;
+    --neutral-bg: #faf9f8;
+    --card-bg: #ffffff;
+    --stroke: #e1dfdd;
+    --text: #242424;
+    --text-secondary: #616161;
+    --high-bg: #fdf3f4;
+    --high-fg: #b10e1c;
+    --high-stroke: #f3d6d8;
+    --med-bg: #fff9f5;
+    --med-fg: #bc4b09;
+    --med-stroke: #f7e0cf;
+    --shadow: 0 1.6px 3.6px rgba(0,0,0,.10), 0 0.3px 0.9px rgba(0,0,0,.07);
+    --radius: 8px;
+    --font: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--neutral-bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.5;
+  }
+  .container { max-width: 1080px; margin: 0 auto; }
+  header.page { margin-bottom: 20px; }
+  header.page h1 { font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+  header.page p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+  .badge-case {
+    display: inline-block; font-size: 12px; font-weight: 600;
+    color: var(--brand); background: #eff6fc; border: 1px solid #cfe4f7;
+    padding: 2px 8px; border-radius: 4px; margin-top: 8px;
+  }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--stroke);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 20px; margin-bottom: 18px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin: 0 0 4px; }
+  .card .hint { font-size: 12.5px; color: var(--text-secondary); margin: 0 0 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  input[type=text], textarea {
+    width: 100%; font-family: var(--font); font-size: 14px;
+    color: var(--text); background: #fff;
+    border: 1px solid #8a8886; border-bottom: 2px solid var(--brand);
+    border-radius: 4px; padding: 8px 10px; outline: none;
+  }
+  input[type=date] {
+    font-family: var(--font); font-size: 14px; color: var(--text); background: #fff;
+    border: 1px solid #8a8886; border-bottom: 2px solid var(--brand);
+    border-radius: 4px; padding: 7px 10px; outline: none; height: 38px;
+  }
+  input[type=text]:focus, textarea:focus { border-bottom-color: var(--brand-pressed); }
+  textarea { min-height: 120px; resize: vertical; font-family: Consolas, "Cascadia Mono", monospace; font-size: 13px; }
+  .row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .row > .grow { flex: 1 1 320px; }
+  button {
+    font-family: var(--font); font-size: 14px; font-weight: 600;
+    color: #fff; background: var(--brand); border: none;
+    border-radius: 4px; padding: 8px 16px; cursor: pointer; white-space: nowrap;
+    height: 38px;
+  }
+  button:hover { background: var(--brand-hover); }
+  button:active { background: var(--brand-pressed); }
+  button.secondary { color: var(--brand); background: #fff; border: 1px solid #8a8886; }
+  button.secondary:hover { background: #f3f2f1; }
+  .divider { display:flex; align-items:center; text-align:center; color:var(--text-secondary); font-size:12px; margin:14px 0; }
+  .divider::before, .divider::after { content:""; flex:1; border-top:1px solid var(--stroke); }
+  .divider::before { margin-right:10px; } .divider::after { margin-left:10px; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
+  .urlbox {
+    margin-top: 12px; background: #f3f2f1; border: 1px solid var(--stroke);
+    border-radius: 4px; padding: 10px; font-size: 12.5px; word-break: break-all;
+  }
+  .urlbox a { color: var(--brand); }
+  .callout {
+    font-size: 12.5px; background: var(--med-bg); border: 1px solid var(--med-stroke);
+    color: #6b4b1f; border-radius: 4px; padding: 10px 12px; margin-top: 12px;
+  }
+  .callout b { color: var(--med-fg); }
+  #status { font-size: 13px; margin: 4px 0 0; min-height: 18px; }
+  #status.err { color: var(--high-fg); }
+  #status.ok { color: #0e700e; }
+  #status.busy { color: var(--text-secondary); }
+  .summary { display:flex; gap:20px; flex-wrap:wrap; margin: 4px 0 14px; }
+  .stat { }
+  .stat .n { font-size: 22px; font-weight: 600; }
+  .stat .l { font-size: 12px; color: var(--text-secondary); }
+  .stat.high .n { color: var(--high-fg); }
+  .stat.med .n { color: var(--med-fg); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    text-align: left; font-weight: 600; color: var(--text-secondary);
+    border-bottom: 1px solid var(--stroke); padding: 8px 10px; white-space: nowrap;
+  }
+  tbody td { padding: 8px 10px; border-bottom: 1px solid #f0eff0; vertical-align: top; }
+  tbody tr:hover { background: #f8f8f8; }
+  .sev { display:inline-block; font-size:11.5px; font-weight:600; padding:1px 8px; border-radius:10px; }
+  .sev.High { color: var(--high-fg); background: var(--high-bg); border:1px solid var(--high-stroke); }
+  .sev.Medium { color: var(--med-fg); background: var(--med-bg); border:1px solid var(--med-stroke); }
+  .exploited { color: var(--high-fg); font-weight:600; }
+  .tag-ext { display:inline-block; font-size:11px; background:#eff6fc; color:var(--brand); border:1px solid #cfe4f7; border-radius:4px; padding:0 5px; margin-left:6px; }
+  .empty { color: var(--text-secondary); font-style: italic; padding: 16px 4px; }
+  .section-head {
+    font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--text-secondary); margin: 26px 4px 10px;
+    border-top: 1px solid var(--stroke); padding-top: 18px;
+  }
+  .al-actions { display:flex; gap:6px; }
+  .al-group {
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--stroke);
+  }
+  .al-group-title { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .al-group-hint { font-size: 12.5px; color: var(--text-secondary); margin: 0 0 12px; }
+  .al-or { color: var(--text-secondary); font-size: 13px; padding: 0 2px; }
+  .al-since { display:flex; align-items:center; gap:8px; }
+  .al-since label { margin:0; font-weight: 400; font-size: 13px; color: var(--text); }
+  td .link-btn {
+    font-family: var(--font); font-size: 12.5px; color: var(--high-fg);
+    background: none; border: none; padding: 0; height: auto; cursor: pointer; font-weight: 600;
+  }
+  td .link-btn:hover { text-decoration: underline; background: none; }
+  footer { color: var(--text-secondary); font-size: 11.5px; margin-top: 24px; text-align:center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <header class="page">
+    <h1>Sign-in Page Branding Checker</h1>
+    <span class="badge-case">Support view</span>
+    <p>Some companies add their own styling to the Microsoft sign-in page. This tool checks that styling for tricks that could <b>move or stack images on top of the login boxes</b> — a technique attackers use to fool people.</p>
+  </header>
+
+  <!-- SECTION 1: by tenant id -->
+  <div class="card">
+    <h2>Option A · Check a company by its ID</h2>
+    <p class="hint">Use this if you only have the company's Tenant ID (a long code like <code>72f988bf-…</code>) or its domain (like <code>contoso.onmicrosoft.com</code>). The tool tries to read the styling automatically. If your browser blocks that (which can happen), a short set of instructions will appear here to help you finish the check.</p>
+    <div class="row">
+      <div class="grow">
+        <label for="tenant">Company Tenant ID or domain</label>
+        <input type="text" id="tenant" placeholder="72f988bf-86f1-41af-91ab-2d7cd011db47  or  contoso.onmicrosoft.com" spellcheck="false" />
+      </div>
+      <button id="btnResolve">Check</button>
+    </div>
+    <div id="authUrlBox" class="urlbox" style="display:none;"></div>
+    <div class="callout" id="manualSteps" style="display:none;">
+      <b>If the automatic check didn't work, do this:</b>
+      <ol style="margin:8px 0 0; padding-left:20px;">
+        <li>Click the sign-in link shown just above to open that company's sign-in page in a new tab.</li>
+        <li>On that page, hold <b>Ctrl</b> and press <b>U</b> to show the page's underlying code (or right-click the page and choose <b>View page source</b>).</li>
+        <li>Hold <b>Ctrl</b> and press <b>F</b>, type <code>customcss</code>, and press <b>Enter</b> to jump to it.</li>
+        <li>Select and copy the full web address around it — it starts with <code>https://</code> and contains the word <code>customcss</code>.</li>
+        <li>Come back here, paste it into <b>Option B</b>, and click <b>Check the styling</b>.</li>
+      </ol>
+      <p style="margin:8px 0 0; font-size:12px;">Tip: if the search finds nothing, this company isn't using custom styling — there's nothing to check.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: by url -->
+  <div class="card">
+    <h2>Option B · Check a styling link</h2>
+    <p class="hint">Use this if you already have the styling web address (it contains the word <code>customcss</code>). This is the most reliable way to check.</p>
+    <div class="row">
+      <div class="grow">
+        <label for="cssUrl">Styling web address</label>
+        <input type="text" id="cssUrl" placeholder="https://aadcdn.msauthimages.net/…/logintenantbranding/0/customcss?ts=…" spellcheck="false" />
+      </div>
+      <button id="btnFetch">Check the styling</button>
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <button class="secondary" id="btnClear">Start over</button>
+    </div>
+    <p id="status"></p>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="card" id="resultsCard" style="display:none;">
+    <h2>Results</h2>
+    <div class="summary" id="summary"></div>
+    <div id="tableWrap"></div>
+  </div>
+
+  <!-- ALLOWLIST BUILDER -->
+  <div class="section-head">Positioning allowlist</div>
+  <div class="card">
+    <h2>Add tenants to the allowlist</h2>
+    <p class="hint">Collect the tenant IDs that should be allowed to use positioning styling. Each one is timestamped and duplicates are blocked automatically. Your working list is saved in this browser; click <b>Export JSON</b> to create the file you share with the branding team each week.</p>
+    <div class="row">
+      <div class="grow">
+        <label for="alTenant">Tenant ID</label>
+        <input type="text" id="alTenant" placeholder="c1c6b6c8-1111-2222-3333-444455556666" spellcheck="false" />
+      </div>
+      <div class="grow">
+        <label for="alNote">Note (optional)</label>
+        <input type="text" id="alNote" placeholder="e.g. customer requested" spellcheck="false" />
+      </div>
+      <button id="alAdd">Add</button>
+    </div>
+    <p id="alStatus"></p>
+    <div id="alTableWrap"></div>
+
+    <div class="al-group">
+      <div class="al-group-title">Share your list</div>
+      <p class="al-group-hint">Creates a file you can send to the branding team. Send the full list — they skip anything they already have.</p>
+      <div class="row">
+        <button id="alExport">Download list to share</button>
+        <span class="al-or">or</span>
+        <div class="al-since">
+          <label for="alSince">only the ones added since</label>
+          <input type="date" id="alSince" style="width:auto;" />
+        </div>
+        <button class="secondary" id="alExportSince">Download those</button>
+      </div>
+    </div>
+
+    <div class="al-group">
+      <div class="al-group-title">Manage your list</div>
+      <div class="row">
+        <button class="secondary" id="alImport">Open a saved list file…</button>
+        <button class="secondary" id="alClear">Delete everything</button>
+      </div>
+      <p class="al-group-hint" style="margin:8px 0 0;">"Open a saved list file" loads a previously downloaded list and merges it in (no duplicates).</p>
+    </div>
+    <input type="file" id="alFile" accept="application/json,.json" style="display:none;" />
+  </div>
+
+  <footer>This tool only reads and reports — it never changes anything. A finding means a setting <i>could</i> move or stack content on the sign-in page; it doesn't prove misuse. When in doubt, share the results with the security team.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Properties that enable overlaying content over the sign-in UI.
+  // "High" = directly repositions/stacks an element; "Medium" = supporting / layout-shifting.
+  var SEVERITY = {
+    "position": "High", "top": "High", "right": "High", "bottom": "High", "left": "High",
+    "inset": "High", "inset-block": "High", "inset-inline": "High",
+    "inset-block-start": "High", "inset-block-end": "High",
+    "inset-inline-start": "High", "inset-inline-end": "High",
+    "z-index": "High", "transform": "High", "translate": "High",
+    "margin": "High", "margin-top": "High", "margin-right": "High",
+    "margin-bottom": "High", "margin-left": "High",
+    "margin-block": "High", "margin-inline": "High",
+    "margin-block-start": "High", "margin-block-end": "High",
+    "margin-inline-start": "High", "margin-inline-end": "High",
+    "float": "Medium", "clear": "Medium", "clip": "Medium", "clip-path": "Medium",
+    "overflow": "Medium", "overflow-x": "Medium", "overflow-y": "Medium"
+  };
+
+  // Selectors known to be allowlisted for tenant custom CSS; .ext-banner-logo is the one commonly misused for overlays.
+  var EXPLOITED_SELECTOR = ".ext-banner-logo";
+
+  var el = function (id) { return document.getElementById(id); };
+
+  function setStatus(msg, cls) {
+    var s = el("status");
+    s.textContent = msg || "";
+    s.className = cls || "";
+  }
+
+  function buildAuthorizeUrl(tenant) {
+    var t = encodeURIComponent(tenant.trim());
+    return "https://login.microsoftonline.com/" + t +
+      "/oauth2/v2.0/authorize?client_id=1950a258-227b-4e31-a9cf-717495945fc2" +
+      "&response_type=code&redirect_uri=" +
+      encodeURIComponent("https://login.microsoftonline.com/common/oauth2/nativeclient") +
+      "&scope=openid&prompt=login";
+  }
+
+  // Parse CSS via the browser CSSOM — mirrors how the login page injects the <style>.
+  function parseCss(cssText) {
+    var style = document.createElement("style");
+    style.textContent = cssText;
+    document.head.appendChild(style);
+    var rules;
+    try {
+      rules = style.sheet ? style.sheet.cssRules : null;
+    } catch (e) {
+      rules = null;
+    }
+    var out = [];
+    if (rules) {
+      for (var i = 0; i < rules.length; i++) {
+        collectFromRule(rules[i], out);
+      }
+    }
+    document.head.removeChild(style);
+    return out;
+  }
+
+  function collectFromRule(rule, out) {
+    // CSSStyleRule = 1
+    if (rule.type === 1 && rule.style) {
+      var sel = rule.selectorText || "";
+      for (var j = 0; j < rule.style.length; j++) {
+        var prop = rule.style[j];
+        var sev = SEVERITY[prop];
+        if (sev) {
+          out.push({
+            selector: sel,
+            prop: prop,
+            value: rule.style.getPropertyValue(prop),
+            important: rule.style.getPropertyPriority(prop) === "important",
+            severity: sev
+          });
+        }
+      }
+    } else if (rule.cssRules) {
+      // @media / @supports wrappers — descend
+      for (var k = 0; k < rule.cssRules.length; k++) {
+        collectFromRule(rule.cssRules[k], out);
+      }
+    }
+  }
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+
+  function selectorIsExploited(sel) {
+    return sel.split(",").some(function (s) {
+      return s.trim().indexOf(EXPLOITED_SELECTOR) !== -1;
+    });
+  }
+
+  function render(findings) {
+    var card = el("resultsCard");
+    card.style.display = "";
+
+    if (!findings.length) {
+      el("summary").innerHTML = "";
+      el("tableWrap").innerHTML = '<p class="empty">✓ Looks clean. No settings were found that could move or stack content on top of the login boxes.</p>';
+      return;
+    }
+
+    // Sort: exploited logo selector first.
+    findings.sort(function (a, b) {
+      var ax = selectorIsExploited(a.selector) ? 0 : 1;
+      var bx = selectorIsExploited(b.selector) ? 0 : 1;
+      return ax - bx;
+    });
+
+    var sels = {};
+    findings.forEach(function (f) { sels[f.selector] = 1; });
+    el("summary").innerHTML =
+      stat(findings.length, "settings to review", "high") +
+      stat(Object.keys(sels).length, "page areas affected");
+
+    var rows = findings.map(function (f) {
+      return "<tr>" +
+        '<td class="mono exploited">' + esc(f.selector) + "</td>" +
+        '<td class="mono">' + esc(f.prop) + "</td>" +
+        '<td class="mono">' + esc(f.value) + (f.important ? " !important" : "") + "</td>" +
+      "</tr>";
+    }).join("");
+
+    el("tableWrap").innerHTML =
+      '<p class="hint" style="margin-top:0">Every setting listed below can move or stack content on the sign-in page, so all of them are worth reviewing.</p>' +
+      "<table><thead><tr>" +
+      "<th>Page area (styling name)</th><th>Setting</th><th>Value</th>" +
+      "</tr></thead><tbody>" + rows + "</tbody></table>";
+  }
+
+  function stat(n, label, cls) {
+    return '<div class="stat ' + (cls || "") + '"><div class="n">' + n + '</div><div class="l">' + label + "</div></div>";
+  }
+
+  function analyzeText(cssText, sourceLabel) {
+    if (!cssText || !cssText.trim()) {
+      setStatus("Nothing to check yet — add a styling link.", "err");
+      return;
+    }
+    var findings = parseCss(cssText);
+    render(findings);
+    if (!findings.length) {
+      setStatus("✓ Done — nothing risky found.", "ok");
+    } else {
+      setStatus("Done — found " + findings.length + " setting" + (findings.length === 1 ? "" : "s") +
+        " to review. See the table below.", "err");
+    }
+    el("resultsCard").scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+
+  function fetchAndAnalyze(url) {
+    url = url.trim();
+    if (!url) { setStatus("Paste the styling web address first.", "err"); return; }
+    setStatus("Getting the styling…", "busy");
+    fetch(url, { method: "GET", mode: "cors", cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.text();
+      })
+      .then(function (text) { analyzeText(text, "Fetched customcss"); })
+      .catch(function (e) {
+        setStatus("Couldn't open that link automatically. Open it in a browser tab, copy all the text you see, and paste it into the box below.", "err");
+      });
+  }
+
+  // Best-effort tenant resolve: show sign-in URL, then try to read customCssUrl (usually blocked).
+  function resolveTenant(tenant) {
+    tenant = tenant.trim();
+    if (!tenant) { setStatus("Enter the company's Tenant ID or domain first.", "err"); return; }
+    var authUrl = buildAuthorizeUrl(tenant);
+    var box = el("authUrlBox");
+    box.style.display = "";
+    box.innerHTML = "Sign-in page: <a href='" + esc(authUrl) + "' target='_blank' rel='noopener'>open this company's sign-in page</a>";
+    el("manualSteps").style.display = "none";
+    setStatus("Trying to read the styling automatically…", "busy");
+
+    fetch(authUrl, { method: "GET", mode: "cors", cache: "no-store" })
+      .then(function (r) { return r.text(); })
+      .then(function (html) {
+        var m = html.match(/https:\/\/aadcdn\.[a-z]*authimages\.net\/[^"'\\ ]*customcss[^"'\\ ]*/i);
+        if (m) {
+          el("cssUrl").value = m[0].replace(/&amp;/g, "&");
+          setStatus("Found the styling — checking it now…", "ok");
+          fetchAndAnalyze(el("cssUrl").value);
+        } else {
+          setStatus("Opened the page, but this company doesn't seem to use custom styling. Nothing to check.", "ok");
+        }
+      })
+      .catch(function () {
+        el("manualSteps").style.display = "";
+        setStatus("The automatic check couldn't run for this company. Please follow the 3 steps that just appeared below.", "err");
+      });
+  }
+
+  // ---------- Positioning allowlist builder ----------
+  var AL_KEY = "positioningAllowlist.v1";
+  var GUID_RE = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  var alEntries = [];
+
+  function alLoad() {
+    try {
+      var raw = localStorage.getItem(AL_KEY);
+      alEntries = raw ? (JSON.parse(raw).entries || []) : [];
+    } catch (e) { alEntries = []; }
+  }
+
+  function alSave() {
+    try {
+      localStorage.setItem(AL_KEY, JSON.stringify({
+        listName: "positioning-allowlist-requests",
+        updatedUtc: new Date().toISOString(),
+        entries: alEntries
+      }));
+    } catch (e) { /* storage may be blocked on file://; in-memory still works */ }
+  }
+
+  function alSetStatus(msg, cls) {
+    var s = el("alStatus");
+    s.textContent = msg || "";
+    s.className = cls || "";
+  }
+
+  function normalizeGuid(s) {
+    return String(s || "").trim().replace(/^[{(]|[})]$/g, "").toLowerCase();
+  }
+
+  function alFind(id) {
+    for (var i = 0; i < alEntries.length; i++) {
+      if (alEntries[i].tenantId === id) return alEntries[i];
+    }
+    return null;
+  }
+
+  function fmtDate(iso) {
+    var d = new Date(iso);
+    if (isNaN(d)) return iso;
+    return d.toISOString().slice(0, 10) + " " + d.toISOString().slice(11, 16) + " UTC";
+  }
+
+  function alAdd() {
+    var id = normalizeGuid(el("alTenant").value);
+    var note = el("alNote").value.trim();
+    if (!id) { alSetStatus("Enter a tenant ID first.", "err"); return; }
+    if (!GUID_RE.test(id)) {
+      alSetStatus("That doesn't look like a tenant ID. It should look like c1c6b6c8-1111-2222-3333-444455556666.", "err");
+      return;
+    }
+    var existing = alFind(id);
+    if (existing) {
+      alSetStatus("Already on the list — added on " + fmtDate(existing.addedUtc) + ". Nothing changed.", "err");
+      return;
+    }
+    alEntries.push({ tenantId: id, addedUtc: new Date().toISOString(), note: note });
+    alSave();
+    alRender();
+    el("alTenant").value = ""; el("alNote").value = "";
+    el("alTenant").focus();
+    alSetStatus("Added " + id + ".", "ok");
+  }
+
+  function alRemove(id) {
+    alEntries = alEntries.filter(function (e) { return e.tenantId !== id; });
+    alSave();
+    alRender();
+    alSetStatus("Removed " + id + ".", "ok");
+  }
+
+  function alRender() {
+    var wrap = el("alTableWrap");
+    if (!alEntries.length) {
+      wrap.innerHTML = '<p class="empty">No tenants added yet. Add a tenant ID above to start the weekly list.</p>';
+      return;
+    }
+    var sorted = alEntries.slice().sort(function (a, b) {
+      return a.addedUtc < b.addedUtc ? 1 : -1; // newest first
+    });
+    var rows = sorted.map(function (e) {
+      return "<tr>" +
+        '<td class="mono">' + esc(e.tenantId) + "</td>" +
+        "<td>" + esc(fmtDate(e.addedUtc)) + "</td>" +
+        "<td>" + (e.note ? esc(e.note) : '<span style="color:var(--text-secondary)">—</span>') + "</td>" +
+        '<td><button class="link-btn" data-remove="' + esc(e.tenantId) + '">Remove</button></td>' +
+      "</tr>";
+    }).join("");
+    wrap.innerHTML =
+      '<p class="hint" style="margin:6px 0 8px">' + alEntries.length + " tenant" + (alEntries.length === 1 ? "" : "s") + " on the list (newest first).</p>" +
+      "<table><thead><tr><th>Tenant ID</th><th>Added</th><th>Note</th><th></th></tr></thead><tbody>" +
+      rows + "</tbody></table>";
+    Array.prototype.forEach.call(wrap.querySelectorAll("[data-remove]"), function (b) {
+      b.addEventListener("click", function () { alRemove(b.getAttribute("data-remove")); });
+    });
+  }
+
+  function alDownload(entries, label) {
+    var payload = {
+      listName: "positioning-allowlist-requests",
+      updatedUtc: new Date().toISOString(),
+      entries: entries
+    };
+    var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "positioning-allowlist-" + label + "-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function alExportAll() {
+    if (!alEntries.length) { alSetStatus("Nothing to export yet.", "err"); return; }
+    alDownload(alEntries, "all");
+    alSetStatus("Exported all " + alEntries.length + " tenant(s) to a JSON file.", "ok");
+  }
+
+  function alExportSince() {
+    var since = el("alSince").value; // yyyy-mm-dd
+    if (!since) { alSetStatus("Pick a date first for the 'since' export.", "err"); return; }
+    var cutoff = since + "T00:00:00.000Z";
+    var subset = alEntries.filter(function (e) { return e.addedUtc >= cutoff; });
+    if (!subset.length) { alSetStatus("No tenants were added on/after " + since + ".", "err"); return; }
+    alDownload(subset, "since-" + since);
+    alSetStatus("Exported " + subset.length + " tenant(s) added on/after " + since + ".", "ok");
+  }
+
+  function alImport(file) {
+    var reader = new FileReader();
+    reader.onload = function () {
+      var incoming;
+      try { incoming = JSON.parse(reader.result); } catch (e) {
+        alSetStatus("That file isn't valid JSON.", "err"); return;
+      }
+      var list = (incoming && incoming.entries) || (Array.isArray(incoming) ? incoming : null);
+      if (!list) { alSetStatus("Couldn't find an 'entries' list in that file.", "err"); return; }
+      var added = 0, skipped = 0;
+      list.forEach(function (e) {
+        var id = normalizeGuid(e.tenantId);
+        if (!GUID_RE.test(id)) { skipped++; return; }
+        var existing = alFind(id);
+        if (existing) {
+          // keep the earliest addedUtc so history is preserved
+          if (e.addedUtc && e.addedUtc < existing.addedUtc) existing.addedUtc = e.addedUtc;
+          skipped++;
+        } else {
+          alEntries.push({ tenantId: id, addedUtc: e.addedUtc || new Date().toISOString(), note: e.note || "" });
+          added++;
+        }
+      });
+      alSave();
+      alRender();
+      alSetStatus("Import done — " + added + " new, " + skipped + " already on the list (merged, no duplicates).", "ok");
+    };
+    reader.readAsText(file);
+  }
+
+  function alClear() {
+    if (!alEntries.length) { alSetStatus("The list is already empty.", "err"); return; }
+    if (!window.confirm("Remove all " + alEntries.length + " tenant(s) from the list? Export first if you still need them.")) return;
+    alEntries = [];
+    alSave();
+    alRender();
+    alSetStatus("Cleared the list.", "ok");
+  }
+
+  // Wire up.
+  document.addEventListener("DOMContentLoaded", function () {
+    el("btnResolve").addEventListener("click", function () { resolveTenant(el("tenant").value); });
+    el("btnFetch").addEventListener("click", function () { fetchAndAnalyze(el("cssUrl").value); });
+    el("btnClear").addEventListener("click", function () {
+      el("cssUrl").value = ""; el("tenant").value = "";
+      el("resultsCard").style.display = "none";
+      el("authUrlBox").style.display = "none";
+      el("manualSteps").style.display = "none";
+      setStatus("");
+    });
+    el("tenant").addEventListener("keydown", function (e) { if (e.key === "Enter") resolveTenant(el("tenant").value); });
+    el("cssUrl").addEventListener("keydown", function (e) { if (e.key === "Enter") fetchAndAnalyze(el("cssUrl").value); });
+
+    // Allowlist builder wiring.
+    alLoad();
+    alRender();
+    el("alAdd").addEventListener("click", alAdd);
+    el("alTenant").addEventListener("keydown", function (e) { if (e.key === "Enter") alAdd(); });
+    el("alNote").addEventListener("keydown", function (e) { if (e.key === "Enter") alAdd(); });
+    el("alExport").addEventListener("click", alExportAll);
+    el("alExportSince").addEventListener("click", alExportSince);
+    el("alImport").addEventListener("click", function () { el("alFile").click(); });
+    el("alFile").addEventListener("change", function (e) {
+      if (e.target.files && e.target.files[0]) alImport(e.target.files[0]);
+      e.target.value = "";
+    });
+    el("alClear").addEventListener("click", alClear);
+  });
+})();
+</script>
+</body>
+</html>
