@@ -221,23 +221,52 @@
     return out;
   }
 
+  // Split a declaration block ("margin: 25px; color: red") into the properties
+  // as literally authored. Iterating rule.style[j] instead would expand
+  // shorthands (e.g. `margin` -> margin-top/right/bottom/left), so we parse the
+  // serialized declaration text to report only the property the author wrote.
+  function parseDeclarations(cssText) {
+    var out = [];
+    if (!cssText) return out;
+    var parts = [];
+    var depth = 0, buf = "";
+    for (var i = 0; i < cssText.length; i++) {
+      var ch = cssText[i];
+      if (ch === "(") depth++;
+      else if (ch === ")") depth = depth > 0 ? depth - 1 : 0;
+      if (ch === ";" && depth === 0) { parts.push(buf); buf = ""; }
+      else buf += ch;
+    }
+    if (buf) parts.push(buf);
+    parts.forEach(function (decl) {
+      decl = decl.trim();
+      if (!decl) return;
+      var idx = decl.indexOf(":");
+      if (idx === -1) return;
+      var prop = decl.slice(0, idx).trim().toLowerCase();
+      var value = decl.slice(idx + 1).trim().replace(/\s*!\s*important\s*$/i, "").trim();
+      if (prop) out.push({ prop: prop, value: value });
+    });
+    return out;
+  }
+
   function collectFromRule(rule, out) {
     // CSSStyleRule = 1
     if (rule.type === 1 && rule.style) {
       var sel = rule.selectorText || "";
-      for (var j = 0; j < rule.style.length; j++) {
-        var prop = rule.style[j];
-        var sev = SEVERITY[prop];
+      var decls = parseDeclarations(rule.style.cssText);
+      decls.forEach(function (d) {
+        var sev = SEVERITY[d.prop];
         if (sev) {
           out.push({
             selector: sel,
-            prop: prop,
-            value: rule.style.getPropertyValue(prop),
-            important: rule.style.getPropertyPriority(prop) === "important",
+            prop: d.prop,
+            value: d.value,
+            important: rule.style.getPropertyPriority(d.prop) === "important",
             severity: sev
           });
         }
-      }
+      });
     } else if (rule.cssRules) {
       // @media / @supports wrappers — descend
       for (var k = 0; k < rule.cssRules.length; k++) {
