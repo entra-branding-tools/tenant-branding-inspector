@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="shortcut icon" href="https://aadcdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico" />
-<title>Sign-in Page Branding Checker</title>
+<title>Sign-in Page Branding Checker (offline copy)</title>
 <style>
   :root {
     --brand: #0f6cbd;
@@ -166,7 +166,7 @@
   <!-- SECTION: all locales via branding JSON -->
   <div class="card">
     <h2>Check all locales at once</h2>
-    <p class="hint">If a company set up styling for several languages (locales), you don't have to check each one by hand. In Microsoft Graph Explorer, run <code>GET /v1.0/organization/&lt;tenantId&gt;/branding/localizations</code>, then paste the full JSON response here — or upload it as a file. The tool builds the styling link for every locale that has custom CSS and checks them all. <a href="how-to-get-custom-css.html">See how to get this JSON →</a></p>
+    <p class="hint">If a company set up styling for several languages (locales), you don't have to check each one by hand. In Microsoft Graph Explorer, run <code>GET /v1.0/organization/&lt;tenantId&gt;/branding/localizations</code>, then paste the full JSON response here — or upload it as a file. The tool builds the styling link for every locale that has custom CSS and checks them all. <a href="https://entra-branding-tools.github.io/tenant-branding-inspector/how-to-get-custom-css.html" target="_blank" rel="noopener">See how to get this JSON →</a></p>
     <label for="brandingJson">Branding localizations JSON</label>
     <textarea id="brandingJson" placeholder='{ "value": [ { "id": "en-US", "cdnList": ["aadcdn.msauthimages.net"], "customCSSRelativeUrl": "…/logintenantbranding/1033/customcss?ts=…" } ] }' spellcheck="false"></textarea>
     <div class="row" style="margin-top:12px;">

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="shortcut icon" href="https://aadcdn.msauth.net/shared/1.0/content/images/favicon_a_eupayfgghqiai7k9sol6lg2.ico" />
+<title>How to get a tenant's custom CSS · Sign-in Page Branding Checker</title>
+<style>
+  :root {
+    --brand: #0f6cbd;
+    --brand-hover: #115ea3;
+    --brand-pressed: #0c3b5e;
+    --neutral-bg: #faf9f8;
+    --card-bg: #ffffff;
+    --stroke: #e1dfdd;
+    --text: #242424;
+    --text-secondary: #616161;
+    --med-bg: #fff9f5;
+    --med-fg: #bc4b09;
+    --med-stroke: #f7e0cf;
+    --ok-bg: #f1faf1;
+    --ok-fg: #0e700e;
+    --ok-stroke: #cfe9cf;
+    --shadow: 0 1.6px 3.6px rgba(0,0,0,.10), 0 0.3px 0.9px rgba(0,0,0,.07);
+    --radius: 8px;
+    --font: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--neutral-bg);
+    color: var(--text);
+    margin: 0;
+    padding: 24px 16px 64px;
+    line-height: 1.5;
+  }
+  .container { max-width: 900px; margin: 0 auto; }
+  a { color: var(--brand); }
+  .back { display: inline-block; font-size: 13px; margin-bottom: 14px; text-decoration: none; }
+  .back:hover { text-decoration: underline; }
+  header.page { margin-bottom: 20px; }
+  header.page h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; }
+  header.page p { margin: 0; color: var(--text-secondary); font-size: 13.5px; }
+  .card {
+    background: var(--card-bg); border: 1px solid var(--stroke);
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 20px; margin-bottom: 18px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin: 0 0 8px; }
+  .card p { margin: 0 0 10px; font-size: 14px; }
+  .card p:last-child { margin-bottom: 0; }
+  code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 12.5px; }
+  .urlbox {
+    background: #f3f2f1; border: 1px solid var(--stroke);
+    border-radius: 4px; padding: 10px; font-size: 12.5px; word-break: break-all; margin: 8px 0;
+  }
+  .step {
+    display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--brand); color: #fff; font-size: 13px; font-weight: 700;
+    margin-right: 10px; flex: 0 0 26px;
+  }
+  .step-head { display: flex; align-items: center; margin-bottom: 8px; }
+  .step-head h2 { margin: 0; }
+  figure { margin: 12px 0 0; }
+  figure img {
+    max-width: 100%; height: auto; display: block;
+    border: 1px solid var(--stroke); border-radius: 6px; box-shadow: var(--shadow);
+  }
+  figcaption { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+  .callout {
+    font-size: 13px; background: var(--med-bg); border: 1px solid var(--med-stroke);
+    color: #6b4b1f; border-radius: 4px; padding: 12px 14px;
+  }
+  .callout b { color: var(--med-fg); }
+  .callout.ok { background: var(--ok-bg); border-color: var(--ok-stroke); color: #1a4d1a; }
+  .callout.ok b { color: var(--ok-fg); }
+  .callout a { font-weight: 600; }
+  footer { color: var(--text-secondary); font-size: 11.5px; margin-top: 24px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a class="back" href="index.html">← Back to the checker</a>
+
+  <header class="page">
+    <h1>Extracting the configured custom CSS for a tenant</h1>
+    <p>Follow these steps to find the styling web address (the <code>customcss</code> link) that a company configured on its Microsoft sign-in page. Once you have it, check it with the <a href="index.html">Sign-in Page Branding Checker</a>.</p>
+  </header>
+
+  <div class="card">
+    <div class="callout"><b>Prerequisite:</b> you must have a <b>Global Administrator</b> or <b>Branding Administrator</b> role in the tenant you want to inspect.</div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="card">
+    <div class="step-head"><div class="step">1</div><h2>Open Microsoft Graph Explorer</h2></div>
+    <p>Go to <a href="https://developer.microsoft.com/en-us/graph/graph-explorer" target="_blank" rel="noopener">Graph Explorer — Try Microsoft Graph APIs</a>.</p>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="card">
+    <div class="step-head"><div class="step">2</div><h2>Sign in to your tenant</h2></div>
+    <p>Use the <b>Sign in</b> button in the top-right corner and sign in with your admin account.</p>
+    <figure>
+      <img src="assets/step-2-signin.png" alt="Signing in to Microsoft Graph Explorer using the Sign in button in the top-right corner." loading="lazy" />
+      <figcaption>Sign in from the top-right of Graph Explorer.</figcaption>
+    </figure>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="card">
+    <div class="step-head"><div class="step">3</div><h2>Get your Tenant ID</h2></div>
+    <p>Send a <b>GET</b> request to the <code>organization</code> resource, then copy the <code>id</code> value from the response — that is your Tenant ID.</p>
+    <div class="urlbox mono">GET https://graph.microsoft.com/v1.0/organization</div>
+    <figure>
+      <img src="assets/step-3-organization.png" alt="GET request to the organization resource; the id field in the response is the Tenant ID." loading="lazy" />
+      <figcaption>The <code>id</code> in the response is the Tenant ID.</figcaption>
+    </figure>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="card">
+    <div class="step-head"><div class="step">4</div><h2>List the configured branding locales</h2></div>
+    <p>Send a <b>GET</b> request to the branding <code>localizations</code> resource (replace <code>&lt;tenantId&gt;</code> with the ID from step 3). The response has a <code>value</code> array — each item is a locale you configured.</p>
+    <div class="urlbox mono">GET https://graph.microsoft.com/v1.0/organization/&lt;tenantId&gt;/branding/localizations</div>
+    <figure>
+      <img src="assets/step-4-localizations.png" alt="GET request to the branding localizations resource returning a value array of locales." loading="lazy" />
+      <figcaption>The <code>value</code> array holds one entry per configured locale.</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/step-5-customcss.png" alt="A locale entry showing the cdnList array and the customCSSRelativeUrl property." loading="lazy" />
+      <figcaption>Each locale exposes <code>cdnList</code> and <code>customCSSRelativeUrl</code>.</figcaption>
+    </figure>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="card">
+    <div class="step-head"><div class="step">5</div><h2>Build the custom CSS URL</h2></div>
+    <p>For every locale that has custom CSS, the <code>customCSSRelativeUrl</code> property has a value (it is <code>null</code> when there is no custom CSS). Combine it with any value from the <code>cdnList</code> array to form the URL:</p>
+    <div class="urlbox mono">https://&lt;value from cdnList&gt;/&lt;value from customCSSRelativeUrl&gt;</div>
+    <p>Example from the sample tenant:</p>
+    <div class="urlbox"><a href="https://aadcdn.msftauthimages.net/dbd5a2dd-0weq2zut5agzo6joxgyyjtglszcozunpniz5gefzsrm/logintenantbranding/1033/customcss?ts=639195266646997629" target="_blank" rel="noopener">https://aadcdn.msftauthimages.net/dbd5a2dd-0weq2zut5agzo6joxgyyjtglszcozunpniz5gefzsrm/logintenantbranding/1033/customcss?ts=639195266646997629</a></div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="card">
+    <div class="step-head"><div class="step">6</div><h2>Repeat for every configured locale</h2></div>
+    <p>Repeat step 5 for each locale that has a custom CSS configured.</p>
+  </div>
+
+  <!-- SHORTCUT -->
+  <div class="card">
+    <div class="callout ok"><b>Shortcut:</b> you don't have to build a URL for every locale by hand. Copy the full JSON response from step 4 and paste it into the <a href="index.html">Check all locales at once</a> box on the checker — it builds every URL and checks all locales for you.</div>
+  </div>
+
+  <footer>This guide is read-only. Reconstructed URLs point to publicly served tenant styling files; nothing here changes any tenant configuration.</footer>
+</div>
+</body>
+</html>
